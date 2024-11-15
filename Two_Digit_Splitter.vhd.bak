@@ -1,0 +1,56 @@
+-- Imports
+library ieee;
+use ieee.std_logic_1164.all;
+-- use ieee.std_logic_arithh.all;
+-- use ieee.std_logic_unisigned.all;
+use ieee.numeric_std.all;
+-- Entity Declaration
+entity two_digit_split is
+port(
+	-- Inputs
+	data_in : in std_logic_vector(6 downto 0);
+	-- Outputs
+	hex_1out: out std_logic_vector(6 downto 0); -- Hex digit 1
+	hex_2out: out std_logic_vector(6 downto 0) -- Hex digit 2
+);
+end two_digit_split;
+-- Architecture (Behavior) of circuit
+architecture behavior of two_digit_split is
+	-- Signal creation (internal wires)
+	signal hex1_s, hex2_s : std_logic_vector(3 downto 0);
+	signal data_s : unsigned(6 downto 0);
+	begin
+	U_HEX0 : binary2bcd
+	port map(
+		number => hex1_s,
+		hex0 => hex_1out
+	);
+	U_HEX1 : binary2bcd
+	port map(
+		number => hex2_s,
+		hex0 => hex_2out
+	);
+	-- Combinational Logic:
+	process(data_s) is
+	--variable value1, value2 : integer := 0;
+	begin
+		hex1_s <= (others => '0');
+		hex2_s <= (others => '0');
+		--check to see if we are out of range
+		if(data_s > 99) then
+			hex1_s <= (others => 'U');
+			hex2_s <= (others => 'U');
+		--do math to split the 2 digit number into 2 separate digits
+		elsif (data_s < 10) then
+			hex1_s <= data_s;
+			hex2_s <= 0;
+		elsif (number < 20) then
+			hex1_s <= data_s - 10;
+			hex2_s <= 1;
+		--conplete
+		...
+		...
+		end if;
+	end process;
+	data_s <= unsigned(data_in);
+end behavior;
